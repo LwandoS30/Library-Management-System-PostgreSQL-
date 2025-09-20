@@ -1,1 +1,180 @@
 # Library-Management-System-PostgreSQL-
+
+The project motive was to test my understanding of the PostgreSQL.
+After being introduce to SQL concepts like database, tables, 
+relationships, primary and foreign keys and advanced queries.
+The project manages the a collection of books, authors and pattros 
+who will be borrowing books from the library. The system will allow 
+the user to view, add, update and delete records from the database.
+
+Techologies:
+  -> PostgreSQL (pgadmin 4)
+
+Setup/ Installation:
+-> Downloaded and installed PostgreSQL setup for Windows.
+
+Approach
+-> First I watched the content videos taught by codetribe facilitator.
+-> I went on and followed the project guidelines to apply the knowledge I have grasp through the content.
+-> I created the database, then created the tables of the database.
+-> I then populated the tables with the sample data provided on the project guidelines
+
+Guidelines on Creating, populating and manipulating the database:
+//Sprint 1
+CREATE DATABASE LibraryDB;
+
+CREATE TABLE authors(
+	author_id SERIAL PRIMARY KEY,
+	fName VARCHAR(250) NOT NULL,
+	lName VARCHAR(250) NOT NULL,
+	nationality VARCHAR(250) NOT NULL,
+	bitrth_year INT NOT NULL,
+	death_year INT
+);
+
+CREATE TABLE books(
+	book_id SERIAL PRIMARY KEY,
+	title VARCHAR(250) NOT NULL,
+	genre TEXT[] NOT NULL,
+	published_year INT NOT NULL,
+	availability BOOLEAN NOT NULL,	
+	author_Id INT REFERENCES authors(author_Id)
+	patron_Id INT REFERENCES patrons(patron_id)
+);
+
+CREATE TABLE patrons(
+	patron_id SERIAL PRIMARY KEY,
+	fName VARCHAR(250) NOT NULL,
+	lName VARCHAR(250) NOT NULL,
+	email VARCHAR(255),
+	borrowed_books INT[]
+);
+
+//Sprint 2
+
+INSERT INTO authors(author_id, fName, lName, nationality, bitrth_year, death_year)
+VALUES(1, 'George', 'Orwell', 'British', 1903, 1950);
+VALUES(2, 'Harper', 'Lee', 'American', 1926, 2016);
+VALUES(3, 'F. SCORT', 'Fitzgerald', 'American', 1896, 1940);
+VALUES(4, 'Aldous', 'Huxley', 'American', 1894, 1963);
+VALUES(5, 'J.D ', 'Salinger', 'American', 1919, 2010);
+VALUES(6, 'Herman', 'Melvine', 'American', 1819, 1891);
+VALUES(7, 'Jane', 'Austen', 'British', 1775, 1817);
+VALUES(8, 'Leo', 'Tolstoy', 'Russian', 1828, 1910);
+VALUES(9, 'Fyodor', 'Dostoevsky', 'Russian', 1821, 1881);
+VALUES(10, 'J.R.R', 'Tolkien', 'British', 1892, 1973);
+
+INSERT INTO books(book_id, title, genre, published_year , availability, author_Id, patron_id)
+VALUES(1,'1984', ARRAY['Dystopian', 'Political Fiction'], 1949, TRUE, 1, 1);
+VALUES(2,'To Kill a Mockingbird', ARRAY['Southern Gothic', 'Bildungsroman'], 1960, TRUE, 2, 2);
+
+VALUES(3,'The Great Gatsby', ARRAY['Tragedy'], 1949, TRUE, 3, 3);
+VALUES(4,'Brave New World', ARRAY['Dystopian', 'Science Fiction'], 1932, TRUE, 4, 4);
+
+VALUES(5,'The Catcher in the Rye', ARRAY['Realist Novel', 'Bildungsroman'], 1951, TRUE, 5, 5);
+VALUES(6,'Mody-Dick', ARRAY['Adventure Fiction'], 1851, TRUE, 6, 6);
+
+VALUES(7,'Pride and Prejudice', ARRAY['Romantic Novel'], 1813, TRUE, 7, 7);
+VALUES(8,'War and Peace', ARRAY['Historical Novel'], 1869, TRUE, 8, 8);
+
+VALUES(9,'Crime and Punishment', ARRAY['Philosophical Novel'], 1866, TRUE, 9, 9);
+VALUES(10,'The Hobbit', ARRAY['Fantasy '], 1937, TRUE, 10, 10);
+
+
+INSERT INTO patrons(patron_id, fName, lName, email, borrowed_books)
+VALUES(1, 'Alice', 'Johnson','alice@example.com', ARRAY[]::INT[]);
+VALUES(2, 'Bob', 'Smith','bob@example.com', ARRAY[1,2]);
+VALUES(3, 'Carol', 'White','carol@example.com', ARRAY[]::INT[]);
+VALUES(4, 'David', 'Brown','david@example.com', ARRAY[3]);
+VALUES(5, 'Eve', 'Davis','eve@example.com', ARRAY[]::INT[]);
+VALUES(6, 'Frank', 'Moore','frank@example.com', ARRAY[4,5]);
+VALUES(7, 'Grace', 'Miller','grace@example.com', ARRAY[]::INT[]);
+VALUES(8, 'Hank', 'Wilson','hank@example.com', ARRAY[6]);
+VALUES(9, 'Ivy', 'Taylor','ivy@example.com', ARRAY[]::INT[]);
+VALUES(10, 'Jack', 'Anderson','jack@example.com', ARRAY[7,8]);
+
+
+//Sprint 3
+//1
+SELECT *
+FROM books;
+
+//2
+SELECT *
+FROM books
+WHERE title = 'Mody-Dick';
+
+//3
+SELECT *
+FROM books
+WHERE author_id = 5;
+
+//4
+SELECT *
+FROM books
+WHERE availability = TRUE;
+
+
+
+//Sprint 4
+//1
+UPDATE books
+SET availability = FALSE
+WHERE title = 'War and Peace';
+
+//2
+UPDATE books
+SET genre = '{ Dystopian, Science Fiction, Fantasy }'
+WHERE book_Id = 4;
+
+//3
+UPDATE patrons
+SET borrowed_books = '{ 1 }'
+WHERE patron_id = 1;
+
+//SPRINT 5
+//1
+DELETE FROM books
+WHERE title = 'The Hobbit';
+
+//2
+DELETE FROM books
+WHERE book_Id = 8;
+
+
+//SPRINT 6
+//1
+SELECT *
+FROM books
+WHERE published_year > 1950;
+
+//2
+SELECT *
+FROM authors 
+WHERE nationality = 'American';
+
+//3
+
+UPDATE books
+SET availability = TRUE;
+
+//4
+SELECT *
+FROM books
+WHERE availability = true AND published_year > 1950;
+
+//5
+//The correct way is this one
+SELECT * 
+FROM authors
+WHERE name LIKE '%George%';
+
+//for my case here is the correct one since my table I separated first and last name
+SELECT * 
+FROM authors
+WHERE fName = 'George';
+
+//6
+UPDATE books
+SET published_year = published_year + 1
+WHERE published_year = 1869;
